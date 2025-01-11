@@ -1,9 +1,28 @@
-*.pyc
-__pycache__/
-venv/
-.env
-*.sqlite3
-db.sqlite3
+# Django
 *.log
 *.pot
 *.pyc
+*.pyo
+__pycache__/
+db.sqlite3
+/local_settings.py
+.env
+*.env
+*.sqlite3
+media/
+static/
+
+# react
+node_modules/
+build/
+.DS_Store
+.env
+
+# Python virtual Environment
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
