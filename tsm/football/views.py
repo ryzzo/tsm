@@ -5,6 +5,7 @@ from .models import League, Team, Player, Match
 from django.db.models.functions import TruncDate
 from django.db.models import F
 from .serializers import LeagueSerializer, TeamSerializer, PlayerSerializer, MatchSerializer
+from django.http import JsonResponse
 
 
 class LeagueViewSet(viewsets.ModelViewSet):
@@ -47,3 +48,29 @@ class MatchesByDateViewSet(viewsets.ModelViewSet):
             grouped_matches[date].append(self.get_serializer(match).data)
 
         return Response(grouped_matches)
+
+
+def match_detail(request, id):
+    try:
+        match = Match.objects.get(id=id)
+        home_team_players = match.home_team.player_set.all()
+        away_team_players = match.away_team.player_set.all()
+
+        def format_formation(formation, players):
+            return {
+                position: [player.name for player in players.filter(id__in = player_ids)]
+                for position, player_ids in formation.items()
+            }
+        
+        data = {
+            "id":match.id,
+            "home_team":match.home_team.name,
+            "away_team":match.away_team.name,
+            "date":match.date,
+            "formation_home_team":format_formation(match.formation_hometeam, home_team_players),
+            "formation_away_team":format_formation(match.formation_awayteam, away_team_players),
+        }
+        
+        return JsonResponse(data)
+    except Match.DoesNotExist:
+        return JsonResponse({"error":"Match not found"}, status=404)

@@ -123,6 +123,8 @@ class Match(models.Model):
             ],
         default='Scheduled'
     )
+    formation_hometeam = models.JSONField(blank=True, null=True)
+    formation_awayteam = models.JSONField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.home_team.name} vs {self.away_team.name}"
